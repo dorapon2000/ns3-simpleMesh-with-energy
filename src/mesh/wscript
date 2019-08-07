@@ -37,6 +37,7 @@ def build(bld):
         'helper/mesh-stack-installer.cc',
         'helper/dot11s/dot11s-installer.cc',
         'helper/flame/flame-installer.cc',
+        'helper/mesh-radio-energy-model-helper.cc',
         ]
 
     obj_test = bld.create_ns3_module_test_library('mesh')
@@ -87,6 +88,7 @@ def build(bld):
         'helper/mesh-stack-installer.h',
         'helper/dot11s/dot11s-installer.h',
         'helper/flame/flame-installer.h',
+        'helper/mesh-radio-energy-model-helper.h',
         ]
 
     if bld.env['ENABLE_EXAMPLES']:
