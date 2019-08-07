@@ -18,8 +18,8 @@
 * Author: Sidharth Nabar <snabar@uw.edu>, He Wu <mdzz@u.washington.edu>
 */
 
-#ifndef WIFI_RADIO_ENERGY_MODEL_HELPER_H
-#define WIFI_RADIO_ENERGY_MODEL_HELPER_H
+#ifndef MESH_RADIO_ENERGY_MODEL_HELPER_H
+#define MESH_RADIO_ENERGY_MODEL_HELPER_H
 
 #include "ns3/energy-model-helper.h"
 #include "ns3/wifi-radio-energy-model.h"
@@ -33,18 +33,18 @@ namespace ns3 {
  * This installer installs WifiRadioEnergyModel for only WifiNetDevice objects.
  *
  */
-class WifiRadioEnergyModelHelper : public DeviceEnergyModelHelper
+class MeshRadioEnergyModelHelper : public DeviceEnergyModelHelper
 {
 public:
   /**
    * Construct a helper which is used to add a radio energy model to a node
    */
-  WifiRadioEnergyModelHelper ();
+  MeshRadioEnergyModelHelper ();
 
   /**
    * Destroy a RadioEnergy Helper
    */
-  ~WifiRadioEnergyModelHelper ();
+  ~MeshRadioEnergyModelHelper ();
 
   /**
    * \param name the name of the attribute to set
@@ -122,4 +122,4 @@ private:
 
 } // namespace ns3
 
-#endif /* WIFI_RADIO_ENERGY_MODEL_HELPER_H */
+#endif /* MESH_RADIO_ENERGY_MODEL_HELPER_H */

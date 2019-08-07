@@ -18,46 +18,47 @@
  * Authors: Sidharth Nabar <snabar@uw.edu>, He Wu <mdzz@u.washington.edu>
  */
 
-#include "wifi-radio-energy-model-helper.h"
+#include "mesh-radio-energy-model-helper.h"
+#include "ns3/wifi-radio-energy-model-helper.h"
 #include "ns3/wifi-net-device.h"
 #include "ns3/wifi-tx-current-model.h"
 #include "ns3/wifi-phy.h"
 
 namespace ns3 {
 
-WifiRadioEnergyModelHelper::WifiRadioEnergyModelHelper ()
+MeshRadioEnergyModelHelper::MeshRadioEnergyModelHelper ()
 {
   m_radioEnergy.SetTypeId ("ns3::WifiRadioEnergyModel");
   m_depletionCallback.Nullify ();
   m_rechargedCallback.Nullify ();
 }
 
-WifiRadioEnergyModelHelper::~WifiRadioEnergyModelHelper ()
+MeshRadioEnergyModelHelper::~MeshRadioEnergyModelHelper ()
 {
 }
 
 void
-WifiRadioEnergyModelHelper::Set (std::string name, const AttributeValue &v)
+MeshRadioEnergyModelHelper::Set (std::string name, const AttributeValue &v)
 {
   m_radioEnergy.Set (name, v);
 }
 
 void
-WifiRadioEnergyModelHelper::SetDepletionCallback (
+MeshRadioEnergyModelHelper::SetDepletionCallback (
   WifiRadioEnergyModel::WifiRadioEnergyDepletionCallback callback)
 {
   m_depletionCallback = callback;
 }
 
 void
-WifiRadioEnergyModelHelper::SetRechargedCallback (
+MeshRadioEnergyModelHelper::SetRechargedCallback (
   WifiRadioEnergyModel::WifiRadioEnergyRechargedCallback callback)
 {
   m_rechargedCallback = callback;
 }
 
 void
-WifiRadioEnergyModelHelper::SetTxCurrentModel (std::string name,
+MeshRadioEnergyModelHelper::SetTxCurrentModel (std::string name,
                                                std::string n0, const AttributeValue& v0,
                                                std::string n1, const AttributeValue& v1,
                                                std::string n2, const AttributeValue& v2,
@@ -86,7 +87,7 @@ WifiRadioEnergyModelHelper::SetTxCurrentModel (std::string name,
  */
 
 Ptr<DeviceEnergyModel>
-WifiRadioEnergyModelHelper::DoInstall (Ptr<NetDevice> device,
+MeshRadioEnergyModelHelper::DoInstall (Ptr<NetDevice> device,
                                        Ptr<EnergySource> source) const
 {
   NS_ASSERT (device != NULL);
