@@ -23,6 +23,7 @@
 #include "ns3/wifi-net-device.h"
 #include "ns3/wifi-tx-current-model.h"
 #include "ns3/wifi-phy.h"
+#include "ns3/mesh-point-device.h"
 
 namespace ns3 {
 
@@ -92,11 +93,11 @@ MeshRadioEnergyModelHelper::DoInstall (Ptr<NetDevice> device,
 {
   NS_ASSERT (device != NULL);
   NS_ASSERT (source != NULL);
-  // check if device is WifiNetDevice
+  // check if device is MeshPointDevice
   std::string deviceName = device->GetInstanceTypeId ().GetName ();
-  if (deviceName.compare ("ns3::WifiNetDevice") != 0)
+  if (deviceName.compare ("ns3::MeshPointDevice") != 0)
     {
-      NS_FATAL_ERROR ("NetDevice type is not WifiNetDevice!");
+      NS_FATAL_ERROR ("NetDevice type is not MeshPointDevice!");
     }
   Ptr<Node> node = device->GetNode ();
   Ptr<WifiRadioEnergyModel> model = m_radioEnergy.Create ()->GetObject<WifiRadioEnergyModel> ();
@@ -104,34 +105,21 @@ MeshRadioEnergyModelHelper::DoInstall (Ptr<NetDevice> device,
 
   // set energy depletion callback
   // if none is specified, make a callback to WifiPhy::SetOffMode
-  Ptr<WifiNetDevice> wifiDevice = DynamicCast<WifiNetDevice> (device);
-  Ptr<WifiPhy> wifiPhy = wifiDevice->GetPhy ();
-  wifiPhy->SetWifiRadioEnergyModel (model);
-  if (m_depletionCallback.IsNull ())
-    {
-      model->SetEnergyDepletionCallback (MakeCallback (&WifiPhy::SetOffMode, wifiPhy));
-    }
-  else
-    {
-      model->SetEnergyDepletionCallback (m_depletionCallback);
-    }
-  // set energy recharged callback
-  // if none is specified, make a callback to WifiPhy::ResumeFromOff
-  if (m_rechargedCallback.IsNull ())
-    {
-      model->SetEnergyRechargedCallback (MakeCallback (&WifiPhy::ResumeFromOff, wifiPhy));
-    }
-  else
-    {
-      model->SetEnergyRechargedCallback (m_rechargedCallback);
-    }
+  Ptr<MeshPointDevice> mp = DynamicCast<MeshPointDevice> (device);
+  std::vector<Ptr<NetDevice> >interfaces = mp->GetInterfaces();
+
+  for (auto i = interfaces.begin(); i != interfaces.end(); i++) {
+    Ptr<WifiNetDevice> wifiDevice = (*i)->GetObject<WifiNetDevice> ();
+    Ptr<WifiPhy> wifiPhy = wifiDevice->GetPhy();
+    // create and register energy model phy listener
+    wifiPhy->RegisterListener (model->GetPhyListener ());
+  }
+
   // add model to device model list in energy source
   source->AppendDeviceEnergyModel (model);
   // set energy source pointer
   model->SetEnergySource (source);
-  // create and register energy model phy listener
-  wifiPhy->RegisterListener (model->GetPhyListener ());
-  //
+
   if (m_txCurrentModel.GetTypeId ().GetUid ())
     {
       Ptr<WifiTxCurrentModel> txcurrent = m_txCurrentModel.Create<WifiTxCurrentModel> ();

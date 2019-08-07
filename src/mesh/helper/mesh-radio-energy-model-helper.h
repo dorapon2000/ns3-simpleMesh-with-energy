@@ -26,6 +26,8 @@
 
 namespace ns3 {
 
+class MeshPointDevice;
+
 /**
  * \ingroup energy
  * \brief Assign WifiRadioEnergyModel to wifi devices.
