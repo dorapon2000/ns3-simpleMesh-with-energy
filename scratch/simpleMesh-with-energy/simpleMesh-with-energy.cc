@@ -6,7 +6,7 @@
 #include <vector>
 #include <iomanip>
 
-#define	PROG_DIR "wlan/mesh-with-energy/data/"
+#define	PROG_DIR "datatata"
 
 using namespace ns3;
 
@@ -61,47 +61,46 @@ MeshDot11sSim2::Configure (int argc, char *argv[])
 EnergySourceContainer
 MeshDot11sSim2::AttachEnergyModelToDevices(double initialEnergy, double txcurrent, double rxcurrent)
 {
-        // configure energy source
-        BasicEnergySourceHelper basicSourceHelper;
-        basicSourceHelper.Set ("BasicEnergySourceInitialEnergyJ", DoubleValue (initialEnergy));
-        EnergySourceContainer e = basicSourceHelper.Install (meshNodes);
+	// configure energy source
+	BasicEnergySourceHelper basicSourceHelper;
+	basicSourceHelper.Set ("BasicEnergySourceInitialEnergyJ", DoubleValue (initialEnergy));
+	EnergySourceContainer e = basicSourceHelper.Install (meshNodes);
 
-        // transmit at 0dBm = 17.4mA, receive mode = 19.7mA
-        MeshRadioEnergyModelHelper radioEnergyHelper;
-        radioEnergyHelper.Set ("TxCurrentA", DoubleValue (txcurrent));
-        radioEnergyHelper.Set ("RxCurrentA", DoubleValue (rxcurrent));
-        radioEnergyHelper.SetDepletionCallback(
-                MakeCallback(&MeshDot11sSim2::NotifyDrained, this));
-        DeviceEnergyModelContainer deviceModels = radioEnergyHelper.Install (meshDevices, e);
-        return e;
+	// transmit at 0dBm = 17.4mA, receive mode = 19.7mA
+	MeshRadioEnergyModelHelper radioEnergyHelper;
+	radioEnergyHelper.Set ("TxCurrentA", DoubleValue (txcurrent));
+	radioEnergyHelper.Set ("RxCurrentA", DoubleValue (rxcurrent));
+	radioEnergyHelper.SetDepletionCallback(
+		MakeCallback(&MeshDot11sSim2::NotifyDrained, this));
+	DeviceEnergyModelContainer deviceModels = radioEnergyHelper.Install (meshDevices, e);
+	return e;
 }
 
 void // Trace function for remaining energy at node.
 MeshDot11sSim2::GetRemainingEnergy (double oldValue, double remainingEnergy)
 {
-        if(m_energyDrained==false) {
-                // show current remaining energy(J)
-                std::cout << std::setw(10) << Simulator::Now ().GetSeconds ()
-                             << "\t "
-                             << remainingEnergy <<std::endl;
-                m_remainingEnergy = remainingEnergy;
-        }
+	if(m_energyDrained==false) {
+		// show current remaining energy(J)
+		std::cout << std::setw(10) << Simulator::Now ().GetSeconds ()
+	    		  << "\t " << remainingEnergy <<std::endl;
+		m_remainingEnergy = remainingEnergy;
+	}
 }
 
 void
 MeshDot11sSim2::TraceRemainingEnergy(EnergySourceContainer e)
 {
-        // all energy sources are connected to resource node n>0
-        Ptr<BasicEnergySource> basicSourcePtr = DynamicCast<BasicEnergySource> (e.Get (m_traceNum));
-        basicSourcePtr->TraceConnectWithoutContext ("RemainingEnergy",
-               MakeCallback (&MeshDot11sSim2::GetRemainingEnergy, this));
+	// all energy sources are connected to resource node n>0
+	Ptr<BasicEnergySource> basicSourcePtr = DynamicCast<BasicEnergySource> (e.Get (m_traceNum));
+	basicSourcePtr->TraceConnectWithoutContext ("RemainingEnergy",
+		MakeCallback (&MeshDot11sSim2::GetRemainingEnergy, this));
 }
 
 void
 MeshDot11sSim2::NotifyDrained()
 {
-        std::cout <<"Energy was Drained. Stop send.\n";
-        m_energyDrained = true;
+	std::cout <<"Energy was Drained. Stop send.\n";
+	m_energyDrained = true;
 }
 
 void
@@ -128,8 +127,7 @@ MeshDot11sSim2::RunSim (int argc, char *argv[])
 	EnergySourceContainer e = AttachEnergyModelToDevices(50, 0.0174, 0.0197);
 	InstallInternetStack ();
 
-	//SetUpUdpApplication();
-        for (uint16_t i = 1; i < m_xSize*m_ySize; ++i)
+	for (uint16_t i = 1; i < m_xSize*m_ySize; ++i)
 		SetUpTcpApplication(n[i], bgr, "TCP");
 
 	// Create an optional packet sink to receive these packets

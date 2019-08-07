@@ -1,6 +1,6 @@
 #include "simpleMeshTest.h"
 
-#define	PROG_DIR "wlan/exp06/"
+#define	PROG_DIR "datatata"
 
 using namespace ns3;
 
@@ -53,35 +53,35 @@ MeshDot11sSim::CreateTopologyNodes ()
 
 	// Create mesh nodes
 	n = new Ptr<Node> [m_xSize*m_ySize];
-        for (uint32_t i = 0; i < m_xSize*m_ySize; ++i) {
-                n[i] = CreateObject<Node> ();
-                n[i]->AggregateObject (CreateObject<ConstantPositionMobilityModel> ());
-                meshNodes.Add (n[i]);
-        }
+	for (uint32_t i = 0; i < m_xSize*m_ySize; ++i) {
+		n[i] = CreateObject<Node> ();
+		n[i]->AggregateObject (CreateObject<ConstantPositionMobilityModel> ());
+		meshNodes.Add (n[i]);
+	}
 
 	MobilityHelper mobility;
 	mobility.SetPositionAllocator ("ns3::GridPositionAllocator",
-                "MinX"      , DoubleValue (0.0),
-                "MinY"      , DoubleValue (100.0),
-                "DeltaX"    , DoubleValue (m_step),
-                "DeltaY"    , DoubleValue (m_step),
-                "GridWidth" , UintegerValue (m_xSize),
-                "LayoutType", StringValue ("RowFirst"));
+								   "MinX"      , DoubleValue (0.0),
+								   "MinY"      , DoubleValue (100.0),
+								   "DeltaX"    , DoubleValue (m_step),
+								   "DeltaY"    , DoubleValue (m_step),
+								   "GridWidth" , UintegerValue (m_xSize),
+								   "LayoutType", StringValue ("RowFirst"));
 
 	//mobility.SetPositionAllocator(&myListPositionAllocator);
 	mobility.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
 	mobility.Install (meshNodes);
 
 	// Create BGR nodes
-        bgr = CreateObject<Node> ();
+	bgr = CreateObject<Node> ();
 
-        //move model
-        ListPositionAllocator pos;
-        Vector3D wiredPoint (0.0, 0.0, 0.0);
-        pos.Add(wiredPoint);
-        mobility.SetPositionAllocator(&pos);
-        mobility.SetMobilityModel("ns3::ConstantPositionMobilityModel");
-        mobility.Install(bgr);
+	//move model
+	ListPositionAllocator pos;
+	Vector3D wiredPoint (0.0, 0.0, 0.0);
+	pos.Add(wiredPoint);
+	mobility.SetPositionAllocator(&pos);
+	mobility.SetMobilityModel("ns3::ConstantPositionMobilityModel");
+	mobility.Install(bgr);
 }
 
 void
@@ -89,16 +89,16 @@ MeshDot11sSim::ConfigureMeshLayer ()
 {
 	NS_LOG_FUNCTION(this);
 
-	double   m_txpower = 18.0; // dbm
+	double m_txpower = 18.0; // dbm
 
-//	LogComponentEnable("HwmpRtable", LogLevel(LOG_LEVEL_DEBUG|
-//		LOG_PREFIX_NODE|LOG_PREFIX_TIME|LOG_PREFIX_FUNC));
-//	LogComponentEnable("HwmpProtocol", LogLevel(LOG_LEVEL_DEBUG|
-//		LOG_PREFIX_NODE|LOG_PREFIX_TIME|LOG_PREFIX_FUNC));
-//	LogComponentEnable("PeerManagementProtocol", LogLevel(LOG_LEVEL_DEBUG|
-//		LOG_PREFIX_NODE|LOG_PREFIX_TIME|LOG_PREFIX_FUNC));
-//	LogComponentEnable("MeshWifiInterfaceMac", LogLevel(LOG_LEVEL_DEBUG|
-//		LOG_PREFIX_NODE|LOG_PREFIX_TIME|LOG_PREFIX_FUNC));
+	//	LogComponentEnable("HwmpRtable", LogLevel(LOG_LEVEL_DEBUG|
+	//		LOG_PREFIX_NODE|LOG_PREFIX_TIME|LOG_PREFIX_FUNC));
+	//	LogComponentEnable("HwmpProtocol", LogLevel(LOG_LEVEL_DEBUG|
+	//		LOG_PREFIX_NODE|LOG_PREFIX_TIME|LOG_PREFIX_FUNC));
+	//	LogComponentEnable("PeerManagementProtocol", LogLevel(LOG_LEVEL_DEBUG|
+	//		LOG_PREFIX_NODE|LOG_PREFIX_TIME|LOG_PREFIX_FUNC));
+	//	LogComponentEnable("MeshWifiInterfaceMac", LogLevel(LOG_LEVEL_DEBUG|
+	//		LOG_PREFIX_NODE|LOG_PREFIX_TIME|LOG_PREFIX_FUNC));
 
 	// Configure YansWifiChannel
 	YansWifiPhyHelper phy = YansWifiPhyHelper::Default ();
@@ -113,7 +113,7 @@ MeshDot11sSim::ConfigureMeshLayer ()
 	YansWifiChannelHelper channel;
 	channel.SetPropagationDelay ("ns3::ConstantSpeedPropagationDelayModel");
 	channel.AddPropagationLoss  ("ns3::LogDistancePropagationLossModel",
-		"Exponent", StringValue ("2.7"));
+								 "Exponent", StringValue ("2.7"));
 	phy.SetChannel (channel.Create ());
 
 	// Configure the parameters of the Peer Link
@@ -123,45 +123,47 @@ MeshDot11sSim::ConfigureMeshLayer ()
 
 	// Configure the parameters of the Peer Management Protocol
 	Config::SetDefault ("ns3::dot11s::PeerManagementProtocol::EnableBeaconCollisionAvoidance",
-		BooleanValue (false));
+						BooleanValue (false));
 
 	// Configure the parameters of the HWMP -------------------------------------------------
 	// set Max Queue Length
 	Config::SetDefault ("ns3::dot11s::HwmpProtocol::MaxQueueSize",
-		UintegerValue (256));
+						UintegerValue (256));
 	// set Lifetime of reactive routing information
 	Config::SetDefault ("ns3::dot11s::HwmpProtocol::Dot11MeshHWMPactivePathTimeout",
-		TimeValue (Seconds (100)));
+						TimeValue (Seconds (100)));
 	// set Lifetime of poractive routing information
 	Config::SetDefault ("ns3::dot11s::HwmpProtocol::Dot11MeshHWMPactiveRootTimeout",
-		TimeValue (Seconds (100)));
+						TimeValue (Seconds (100)));
 	// set Maximum number of retries before we suppose the destination to be unreachable
-        Config::SetDefault ("ns3::dot11s::HwmpProtocol::Dot11MeshHWMPmaxPREQretries",
-                UintegerValue (5));
+	Config::SetDefault ("ns3::dot11s::HwmpProtocol::Dot11MeshHWMPmaxPREQretries",
+    		            UintegerValue (5));
 	// set Maximum number of PREQ receivers, when we send a PREQ as a chain of unicasts
 	Config::SetDefault ("ns3::dot11s::HwmpProtocol::UnicastPreqThreshold",
-		UintegerValue (10));
+						UintegerValue (10));
 	// set Maximum number of broadcast receivers, when we send a broadcast as a chain of unicasts
 	Config::SetDefault ("ns3::dot11s::HwmpProtocol::UnicastDataThreshold",
-		UintegerValue (5));
+						UintegerValue (5));
 	// set Destination only HWMP flag
 	Config::SetDefault ("ns3::dot11s::HwmpProtocol::DoFlag",
-		BooleanValue (true));
+						BooleanValue (true));
 	// set Reply and forward flag
 	Config::SetDefault ("ns3::dot11s::HwmpProtocol::RfFlag",
-		BooleanValue (false));
+						BooleanValue (false));
 
 	// Stack installer creates all protocols and install them to mesh point device
 	mesh = MeshHelper::Default ();
 	mesh.SetStandard (WIFI_PHY_STANDARD_80211a);
 	if (!Mac48Address (m_root.c_str ()).IsBroadcast ()) {
-                mesh.SetStackInstaller ("ns3::Dot11sStack", "Root",
-                	Mac48AddressValue (Mac48Address (m_root.c_str ())));
-        } else
+		mesh.SetStackInstaller ("ns3::Dot11sStack", "Root",
+        			        	Mac48AddressValue (Mac48Address (m_root.c_str ())));
+	} else {
 		mesh.SetStackInstaller ("ns3::Dot11sStack");
+	}
 
 	mesh.SetMacType ("RandomStart", TimeValue (Seconds(m_randomStart)));
-	mesh.SetRemoteStationManager ("ns3::ConstantRateWifiManager",
+	mesh.SetRemoteStationManager (
+		"ns3::ConstantRateWifiManager",
 		"DataMode", StringValue ("OfdmRate6Mbps"),
 		"RtsCtsThreshold", UintegerValue (2500));
 
@@ -179,11 +181,11 @@ MeshDot11sSim::ConfigureMeshLayer ()
 
 	//connect the mesh to the Internet---------------------------------------
 	PointToPointHelper p2p;
-        p2p.SetDeviceAttribute  ("DataRate", StringValue ("5Mbps"));
-        p2p.SetChannelAttribute ("Delay"   , StringValue ("2ms"));
+	p2p.SetDeviceAttribute  ("DataRate", StringValue ("5Mbps"));
+	p2p.SetChannelAttribute ("Delay"   , StringValue ("2ms"));
 
-        // set portal node(n[0])
-        p2pDevices = p2p.Install (bgr, n[0]);
+	// set portal node(n[0])
+	p2pDevices = p2p.Install (bgr, n[0]);
 }
 
 void
@@ -213,7 +215,7 @@ MeshDot11sSim::InstallInternetStack ()
 	// 10.10.1.1(n[0]) is a portal node to the exteriar gateway router of internet
 	Ipv4Address gateway ("10.10.1.1");
 	Ptr<Ipv4StaticRouting> meshStatic;
-        for (uint32_t i = 1; i < m_xSize*m_ySize; ++i) {
+	for (uint32_t i = 1; i < m_xSize*m_ySize; ++i) {
 		meshStatic = staticRouting.GetStaticRouting (n[i]->GetObject<Ipv4> ());
 		meshStatic->SetDefaultRoute(gateway, 1);
 	}
@@ -291,7 +293,7 @@ MeshDot11sSim::RunSim (int argc, char *argv[])
 	monitor = flowmon.InstallAll();
 
 	if(m_showRtable)
-		Simulator::Schedule (Seconds(m_totalTime),
+	Simulator::Schedule (Seconds(m_totalTime),
 			&MeshDot11sSim::showHwmpRoutingTables, this);
 	Simulator::Schedule (Seconds(m_totalTime), &MeshDot11sSim::Report, this);
 
@@ -443,15 +445,15 @@ MeshDot11sSim::showHwmpRoutingTables()
 {
 	NS_LOG_FUNCTION(this);
 
-        for (uint32_t i = 0; i < m_xSize*m_ySize; ++i) {
-		Ptr<NetDevice> ndev = n[i]->GetDevice(0);
-		NS_ASSERT (ndev != 0);
-		Ptr<MeshPointDevice> mdev = ndev->GetObject<MeshPointDevice>();
-		NS_ASSERT (mdev != 0);
-		Ptr<ns3::dot11s::HwmpProtocol> hwmp = mdev->GetObject<ns3::dot11s::HwmpProtocol> ();
-		NS_ASSERT (hwmp != 0);
-		//hwmp->Report(std::cout);
+	for (uint32_t i = 0; i < m_xSize*m_ySize; ++i) {
+	Ptr<NetDevice> ndev = n[i]->GetDevice(0);
+	NS_ASSERT (ndev != 0);
+	Ptr<MeshPointDevice> mdev = ndev->GetObject<MeshPointDevice>();
+	NS_ASSERT (mdev != 0);
+	Ptr<ns3::dot11s::HwmpProtocol> hwmp = mdev->GetObject<ns3::dot11s::HwmpProtocol> ();
+	NS_ASSERT (hwmp != 0);
+	//hwmp->Report(std::cout);
 
-		hwmp->ReportRtables(std::cout, m_xSize*m_ySize);
+	// hwmp->ReportRtables(std::cout, m_xSize*m_ySize);
 	}
 }
