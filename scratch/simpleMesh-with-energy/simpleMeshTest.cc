@@ -251,12 +251,6 @@ MeshDot11sSim::SetUpTcpApplication(Ptr <Node> s, Ptr <Node> m, std::string proto
 	src.Start (Seconds (30.1));
 	src.Stop  (Seconds (60.1));
 
-	// Create an optional packet sink to receive these packets
-	PacketSinkHelper sinkHelper ("ns3::TcpSocketFactory",
-	Address (InetSocketAddress (Ipv4Address::GetAny (), 8888)));
-	ApplicationContainer sink = sinkHelper.Install (m);
-	sink.Start (Seconds (30.1));
-	sink.Stop  (Seconds (60.1 ));
 }
 
 void
@@ -282,8 +276,16 @@ MeshDot11sSim::RunSim (int argc, char *argv[])
 	InstallInternetStack ();
 
 	//SetUpUdpApplication();
-        for (uint16_t i = 1; i < m_xSize*m_ySize; ++i)
+	for (uint16_t i = 1; i < m_xSize*m_ySize; ++i)
 		SetUpTcpApplication(n[i], bgr, "TCP");
+
+	// Create an optional packet sink to receive these packets
+	PacketSinkHelper sinkHelper ("ns3::TcpSocketFactory",
+		Address (InetSocketAddress (Ipv4Address::GetAny (), 8888)));
+	ApplicationContainer sink = sinkHelper.Install (bgr);
+	sink.Start (Seconds (30.1));
+	sink.Stop  (Seconds (60.1 ));
+
 
 	// Install FlowMonitor on all nodes
 	monitor = flowmon.InstallAll();
