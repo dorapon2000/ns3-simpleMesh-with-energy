@@ -6,7 +6,7 @@
 #include <vector>
 #include <iomanip>
 
-#define	PROG_DIR "datatata"
+#define	PROG_DIR "datatata/"
 
 using namespace ns3;
 
